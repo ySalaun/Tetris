@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>757</width>
+    <height>524</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QGraphicsView" name="screenP1">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>261</width>
+     <height>481</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QGraphicsView" name="screenP2">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>20</y>
+     <width>261</width>
+     <height>481</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="scoreLabelP2">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>100</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Score Player 2:</string>
+   </property>
+  </widget>
+  <widget class="QLCDNumber" name="scoreP1">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>60</y>
+     <width>131</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLCDNumber" name="scoreP2">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>130</y>
+     <width>131</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="value" stdset="0">
+    <double>0.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="start">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>180</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>START</string>
+   </property>
+   <property name="started" stdset="0">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pause">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>220</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PAUSE</string>
+   </property>
+   <property name="autoDefault">
+    <bool>true</bool>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="exit">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>260</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="text">
+    <string>EXIT</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="scoreLabelP1">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>30</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Score Player 1:</string>
+   </property>
+  </widget>
+  <zorder>screenP1</zorder>
+  <zorder>screenP2</zorder>
+  <zorder>scoreLabelP2</zorder>
+  <zorder>scoreP1</zorder>
+  <zorder>scoreP2</zorder>
+  <zorder>pause</zorder>
+  <zorder>exit</zorder>
+  <zorder>scoreLabelP1</zorder>
+  <zorder>start</zorder>
+ </widget>
+ <tabstops>
+  <tabstop>start</tabstop>
+  <tabstop>screenP1</tabstop>
+  <tabstop>pause</tabstop>
+  <tabstop>exit</tabstop>
+  <tabstop>screenP2</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>exit</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>397</x>
+     <y>273</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>465</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>start</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>pause</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>357</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>357</x>
+     <y>227</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>start</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>start</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>340</x>
+     <y>194</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pause</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>pause</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>237</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>348</x>
+     <y>232</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pause</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>start</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>396</x>
+     <y>223</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

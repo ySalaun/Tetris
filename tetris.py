@@ -1,11 +1,19 @@
-## wonbderful project about tetris multiplayer game
+## wonderful project about tetris multiplayer game
 
 import sys
 import random
+import tetris_playscreen
+
+from PyQt4.QtCore import *	
+from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui, uic
 
 ## MAIN ##
-
-# test with selectionned message
-if len(sys.argv) == 1:
-	print sys.argv[0]
+app = QtGui.QApplication(sys.argv)
+Dialog = QtGui.QDialog()
+ui = tetris_playscreen.Ui_Dialog()
+ui.setupUi(Dialog)
+Dialog.show()
+sys.exit(app.exec_())
+ 
 	
