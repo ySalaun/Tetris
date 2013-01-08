@@ -1,0 +1,11 @@
+class Scene prend tableau rend graphics scene
+--> Yohann
+
+class Tableau prend tableau en params et methods pour checker si game over/ line complete
+--> Yohann
+
+class Tetris params forme methods pour mouvement(rotation /translation)
+-->
+
+Dico pour forme couleur angle de rotation
+-->
