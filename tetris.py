@@ -15,7 +15,10 @@ app = QtGui.QApplication(sys.argv)
 graphics = tetris_scene.Graphics()
 
 table = table_screen.Table()
-table.value[0] = params.RED
+for i in range(1,params.ROW_NB*params.COL_NB):
+	table.value[i] = params.RED
+graphics.display(2, table.value)
+table.checkLineComplete()
 graphics.display(2, table.value)
 
 sys.exit(app.exec_()) 
