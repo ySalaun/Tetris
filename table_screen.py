@@ -1,23 +1,27 @@
-# Table class that checks when game over and contains the color of each case
+from PyQt4.QtCore import *
 
 import params
 import tetris_scene
-import threading
 
-class Table(threading.Thread):
+# Table class that checks when game over and contains the color of each case
+class Table(QThread):
 	# initialize table with white cases everywhere
-	def __init__(self):
+	def __init__(self, g, p):
 		# thread init
-		threading.Thread.__init__(self)
+		QThread.__init__(self)
 
 		# table value init
 		table = []
 		for index in range(params.ROW_NB*params.COL_NB):
 			table.append(params.WHITE)
 		self.value = table
+		self.graphics = g
+		self.player = p
 		
 	# check in the table if there are complete lines and delete them
+	# return the number of complete lines
 	def checkLineComplete(self):
+		line_complete = 0
 		i = params.ROW_NB-1
 		while i>=0:
 			sum = 0
@@ -26,9 +30,11 @@ class Table(threading.Thread):
 					sum += 1
 			if sum == params.COL_NB:
 				self.deleteLine(i)
+				line_complete += 1
 			else:
 				i = i-1
-				
+		return line_complete
+		
 	# delete line of [index] in the table
 	def deleteLine(self, index):
 		for i in range(0,index):
@@ -39,4 +45,9 @@ class Table(threading.Thread):
 			
 	# threading methods
 	def run(self):
-		self.checkLineComplete()
+		while True:
+			line_complete = self.checkLineComplete()
+			print line_complete, self.thread().currentThreadId()
+			if line_complete:
+				self.graphics.updateScreen(self.value, self.player)	
+			self.thread().sleep(1)
