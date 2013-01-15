@@ -12,14 +12,20 @@ import tetris_scene
 ## MAIN ##
 
 app = QtGui.QApplication(sys.argv)
-graphics = tetris_scene.Graphics()
 
-table = table_screen.Table()
+tableP1 = table_screen.Table()
+tableP2 = table_screen.Table()
 for i in range(1,params.ROW_NB*params.COL_NB):
-	table.value[i] = params.RED
-graphics.display(2, table.value)
-table.checkLineComplete()
-graphics.display(2, table.value)
+	tableP1.value[i] = params.RED
+for i in range(1,params.ROW_NB*params.COL_NB):
+	tableP2.value[i] = params.GREEN
+	
+graphics = tetris_scene.Graphics(tableP1, tableP2)
+graphics.run() 
+tableP1.run() 
+graphics.display()
+tableP2.run()
+graphics.display()
 
 sys.exit(app.exec_()) 
 	
