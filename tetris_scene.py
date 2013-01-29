@@ -18,13 +18,15 @@ class Scene(QGraphicsScene):
 		self.caseH = self.h/params.ROW_NB
 		
 	# transform a table into a displayable scene
-	def display(self, screen, table):
+	def display(self, screen, table, tet):
 		t = 0
 		while t < len(table):
 			j = t%params.ROW_NB
 			i = (t-j)/params.ROW_NB
 			self.addCase(i, j, table[t])
 			t += 1
+		for (x,y) in params.dico_shape[tet.type][tet.angle]:
+			self.addCase(tet.position_x+x,tet.position_y-y,tet.color)
 		screen.setScene(self)
 		
 	# add a case with coordinate (i,j) in the table
@@ -43,20 +45,19 @@ class Graphics():
 		
 		# tables init
 		self.P1 = self.ui.screenP1
-		self.tableP1 = []
 		self.P2 = self.ui.screenP2
-		self.tableP2 = []
 		
 		self.dialog.show()
 	
 	# display functions
 	# update [table] for [player] screen
-	def updateScreen(self, table, player):
+	def updateScreen(self, table, tet, player):
 		if player == 1:
-			self.tableP1 = table
+			scene = Scene(self.P1.width(), int(self.P1.height()))
+			scene.display(self.P1, table, tet)
 		else:
-			self.tableP2 = table
-		self.display()
+			scene = Scene(self.P2.width(), int(self.P2.height()))
+			scene.display(self.P2, table, tet)
 	
 	# update screen display
 	def display(self):

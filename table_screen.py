@@ -2,6 +2,7 @@ from PyQt4.QtCore import *
 
 import params
 import tetris_scene
+import tetrominos
 
 # Table class that checks when game over and contains the color of each case
 class Table(QThread):
@@ -17,6 +18,7 @@ class Table(QThread):
 		self.value = table
 		self.graphics = g
 		self.player = p
+		self.tet=tetrominos.Tetrominos()
 		
 	# check in the table if there are complete lines and delete them
 	# return the number of complete lines
@@ -46,8 +48,14 @@ class Table(QThread):
 	# threading methods
 	def run(self):
 		while True:
+			#while self.tet.low(self,tertrominos.dico_color[tet.type]):
+			#	se
+			while self.tet.low(self):
+				self.graphics.updateScreen(self.value, self.tet, self.player)
+				self.thread().sleep(1)
+				
 			line_complete = self.checkLineComplete()
 			print line_complete, self.thread().currentThreadId()
 			if line_complete:
-				self.graphics.updateScreen(self.value, self.player)	
+				self.graphics.updateScreen(self.value, self.tet, self.player)	
 			self.thread().sleep(1)

@@ -5,14 +5,14 @@ import params
 import table_screen
 import random
 
-class tetrominos:
+class Tetrominos:
     #initialise a tetromino at the top of the screen
     def __init__(self):
         self.type 		= random.randrange(params.SHAPE_NB)
         self.angle 		= random.randrange(params.dico_nbrot[self.type])
         self.position_x = params.COL_NB/2
         self.position_y = 0
-		self.color		= params.dico_color[self.type]
+        self.color		= params.dico_color[self.type]
 
     #check if the position is possible
     def check_is_possible(self,table):
@@ -39,5 +39,5 @@ class tetrominos:
         self.position_y += 1
         if self.check_is_possible(table):
             return True
-		self.position_y -= 1
+        self.position_y -= 1
         return False

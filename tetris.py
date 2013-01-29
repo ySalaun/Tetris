@@ -24,12 +24,9 @@ tableP2 = table_screen.Table(graphics, 2)
 
 # temporary
 for i in range(1,params.ROW_NB*params.COL_NB):
-	tableP1.value[i] = params.RED
+	tableP1.value[i] = params.WHITE
 for i in range(1,params.ROW_NB*params.COL_NB):
-	tableP2.value[i] = params.GREEN
-graphics.updateScreen(tableP1.value, 1)
-graphics.updateScreen(tableP2.value, 2)
-
+	tableP2.value[i] = params.WHITE
 # initialize buttons thread
 button = tetris_button.Button(graphics)
 
