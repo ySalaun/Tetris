@@ -48,14 +48,13 @@ class Table(QThread):
 	# threading methods
 	def run(self):
 		while True:
-			#while self.tet.low(self,tertrominos.dico_color[tet.type]):
-			#	se
-			while self.tet.low(self):
+			while self.tet.low(self): 
 				self.graphics.updateScreen(self.value, self.tet, self.player)
-				self.thread().sleep(1)
-				
+				self.thread().sleep(params.SPEED)
+				print 'low'
+			self.tet.add_tetrominos(self)
 			line_complete = self.checkLineComplete()
-			print line_complete, self.thread().currentThreadId()
 			if line_complete:
-				self.graphics.updateScreen(self.value, self.tet, self.player)	
-			self.thread().sleep(1)
+				print 'jackpot'
+				self.graphics.updateScreen(self.value, self.tet, self.player)
+			self.tet = tetrominos.Tetrominos()

@@ -2,10 +2,13 @@
 from PyQt4.QtGui import QColor
 
 # number of cases in a row
-ROW_NB = 25
+ROW_NB		= 25
 
 # number of cases in a column
-COL_NB = 13 
+COL_NB		= 13 
+
+# speed
+SPEED		= 1
 
 # cases colors
 RED 		= QColor(255, 0, 0) 
@@ -18,10 +21,10 @@ WHITE		= QColor(255, 255, 255)
 BLACK		= QColor(0, 0, 0)
 
 # tetrominos
-SHAPE_NB 	= 7
+SHAPE_NB	= 7
 
 # SQUARE
-square_0 	= [(0,0),(0,1),(1,0),(1,1)]
+square_0	= [(0,0),(0,1),(1,0),(1,1)]
 
 square		= [square_0]
 
@@ -68,6 +71,6 @@ t_4			= [(0,0),(0,1),(0,2),(-1,1)]
 t 			= [t_1, t_2, t_3, t_4]
 
 # DICTIONNARIES
-dico_shape 	= {0:square, 1:line, 2:p, 3:q, 4:z, 5:s, 6:t}
-dico_nbrot 	= {0:1, 1:2, 2:4, 3:4, 4:2, 5:2, 6:4}
-dico_color 	= {0:YELLOW, 1:TURQUOISE, 2:BLUE, 3:PURPLE, 4:GREEN, 5:RED, 6:BLACK}
+dico_shape	= {0:square, 1:line, 2:p, 3:q, 4:z, 5:s, 6:t}
+dico_nbrot	= {0:1, 1:2, 2:4, 3:4, 4:2, 5:2, 6:4}
+dico_color	= {0:YELLOW, 1:TURQUOISE, 2:BLUE, 3:PURPLE, 4:GREEN, 5:RED, 6:BLACK}

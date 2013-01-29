@@ -1,4 +1,4 @@
-from PyQt4.QtCore import *	
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, uic
 
@@ -21,17 +21,23 @@ class Scene(QGraphicsScene):
 	def display(self, screen, table, tet):
 		t = 0
 		while t < len(table):
-			j = t%params.ROW_NB
-			i = (t-j)/params.ROW_NB
+			i = t%params.ROW_NB
+			j = (t-i)/params.ROW_NB
 			self.addCase(i, j, table[t])
+			if j == 0:
+				self.addCase(i, j, params.RED)
 			t += 1
+		print '-----------'
 		for (x,y) in params.dico_shape[tet.type][tet.angle]:
-			self.addCase(tet.position_x+x,tet.position_y-y,tet.color)
+			i = tet.position_y-y
+			j = tet.position_x+x
+			print i, j
+			self.addCase(i, j, tet.color)
 		screen.setScene(self)
 		
 	# add a case with coordinate (i,j) in the table
 	def addCase(self, i, j, color):
-		self.addRect(i*self.w/params.COL_NB, j*self.h/params.ROW_NB, self.caseW, self.caseH, QPen(color), QBrush(color))
+		self.addRect(j*self.w/params.COL_NB, i*self.h/params.ROW_NB, self.caseW, self.caseH, QPen(color), QBrush(color))
 		
 # Main graphics class
 class Graphics():

@@ -4,7 +4,6 @@ from PyQt4 import QtGui
 from PyQt4.QtGui  import QApplication
 
 import sys
-import random
 
 import params
 import table_screen
@@ -27,13 +26,13 @@ for i in range(1,params.ROW_NB*params.COL_NB):
 	tableP1.value[i] = params.WHITE
 for i in range(1,params.ROW_NB*params.COL_NB):
 	tableP2.value[i] = params.WHITE
+
 # initialize buttons thread
 button = tetris_button.Button(graphics)
 
 # thread start
-button.start()
+#button.start()
 tableP1.start() 
-tableP2.start()
+#tableP2.start()
 
-sys.exit(app.exec_()) 
-	
+sys.exit(app.exec_())
