@@ -12,6 +12,7 @@ class tetrominos:
         self.angle 		= random.randrange(params.dico_nbrot[self.type])
         self.position_x = params.COL_NB/2
         self.position_y = 0
+		self.color		= params.dico_color[self.type]
 
     #check if the position is possible
     def check_is_possible(self,table):
