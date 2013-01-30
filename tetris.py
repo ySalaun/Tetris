@@ -7,6 +7,7 @@ import sys
 
 import params
 import table_screen
+import tetris_ai
 import tetris_button
 import tetris_scene
 
@@ -27,12 +28,16 @@ for i in range(1,params.ROW_NB*params.COL_NB):
 for i in range(1,params.ROW_NB*params.COL_NB):
 	tableP2.value[i] = params.WHITE
 
+# initialize AI
+ai = tetris_ai.AI(tableP1)
+
 # initialize buttons thread
-button = tetris_button.Button(graphics)
+button = tetris_button.Button(graphics, tableP1, tableP2)
 
 # thread start
 #button.start()
 tableP1.start() 
+#ai.start()
 #tableP2.start()
 
 sys.exit(app.exec_())

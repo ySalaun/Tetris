@@ -23,15 +23,11 @@ class Scene(QGraphicsScene):
 		while t < len(table):
 			i = t%params.ROW_NB
 			j = (t-i)/params.ROW_NB
-			self.addCase(i, j, table[t])
-			if j == 0:
-				self.addCase(i, j, params.RED)
+			self.addCase(i, j, table[i+j*params.ROW_NB])
 			t += 1
-		print '-----------'
 		for (x,y) in params.dico_shape[tet.type][tet.angle]:
-			i = tet.position_y-y
+			i = tet.position_y+y
 			j = tet.position_x+x
-			print i, j
 			self.addCase(i, j, tet.color)
 		screen.setScene(self)
 		

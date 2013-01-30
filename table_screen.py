@@ -18,6 +18,8 @@ class Table(QThread):
 		self.value = table
 		self.graphics = g
 		self.player = p
+		
+		# tetrominos init
 		self.tet=tetrominos.Tetrominos()
 		
 	# check in the table if there are complete lines and delete them
@@ -44,17 +46,20 @@ class Table(QThread):
 				self.value[index-i+j*params.ROW_NB] = self.value[index-i-1+j*params.ROW_NB]
 		for j in range(params.COL_NB):
 			self.value[j*params.ROW_NB] = params.WHITE
-			
+	
 	# threading methods
 	def run(self):
 		while True:
-			while self.tet.low(self): 
+			self.graphics.updateScreen(self.value, self.tet, self.player)
+			self.thread().sleep(params.SPEED) 
+			# lowering tetrominos loop
+			while self.tet.move(self, 1):
 				self.graphics.updateScreen(self.value, self.tet, self.player)
-				self.thread().sleep(params.SPEED)
-				print 'low'
+				self.thread().sleep(params.SPEED) 
+			# when tetrominos cannot move anymore
 			self.tet.add_tetrominos(self)
+			# check if one line or more are complete
 			line_complete = self.checkLineComplete()
 			if line_complete:
-				print 'jackpot'
 				self.graphics.updateScreen(self.value, self.tet, self.player)
 			self.tet = tetrominos.Tetrominos()
