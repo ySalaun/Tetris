@@ -52,7 +52,7 @@ class Tetrominos:
 			return True
 		self.position_x -= direction
 		return False
-			
+
 	# lower the tetrominos and return True if it is possible
 	def low(self,table):
 		self.position_y += 1

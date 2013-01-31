@@ -8,12 +8,12 @@ import sys
 import params
 import table_screen
 import tetris_ai
-import tetris_button
 import tetris_scene
 
 ## MAIN ##
 
 app = QtGui.QApplication(sys.argv)
+app.processEvents()
 
 # initialize graphics
 graphics = tetris_scene.Graphics()
@@ -31,13 +31,10 @@ for i in range(1,params.ROW_NB*params.COL_NB):
 # initialize AI
 ai = tetris_ai.AI(tableP1)
 
-# initialize buttons thread
-button = tetris_button.Button(graphics, tableP1, tableP2)
-
 # thread start
-#button.start()
 tableP1.start() 
+tableP2.start()
+
 #ai.start()
-#tableP2.start()
 
 sys.exit(app.exec_())

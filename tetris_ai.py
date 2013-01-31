@@ -19,4 +19,4 @@ class AI(QThread):
 		while True:
 			if not self.translate(d):
 				d = 1 - d
-			self.thread().sleep(1)
+			self.msleep(10)

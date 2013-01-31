@@ -10,6 +10,7 @@ class Table(QThread):
 	def __init__(self, g, p):
 		# thread init
 		QThread.__init__(self)
+		self.running = False
 
 		# table value init
 		table = []
@@ -18,9 +19,10 @@ class Table(QThread):
 		self.value = table
 		self.graphics = g
 		self.player = p
+		self.speed_level = 1
 		
 		# tetrominos init
-		self.tet=tetrominos.Tetrominos()
+		self.tet = tetrominos.Tetrominos()
 		
 	# check in the table if there are complete lines and delete them
 	# return the number of complete lines
@@ -47,15 +49,26 @@ class Table(QThread):
 		for j in range(params.COL_NB):
 			self.value[j*params.ROW_NB] = params.WHITE
 	
+	# compute the speed depending on the speed level
+	def speed(self):
+		return params.SPEED*5/self.speed_level
+	
+	# display a tetrominos after its move
+	def display(self):
+		while not self.graphics.running:
+			self.msleep(self.speed())
+		self.graphics.updateScreen(self.value, self.tet, self.player)
+		self.msleep(self.speed())
+	
 	# threading methods
 	def run(self):
+		while not self.graphics.running:
+			self.msleep(10)
 		while True:
-			self.graphics.updateScreen(self.value, self.tet, self.player)
-			self.thread().sleep(params.SPEED) 
+			self.display()
 			# lowering tetrominos loop
-			while self.tet.move(self, 1):
-				self.graphics.updateScreen(self.value, self.tet, self.player)
-				self.thread().sleep(params.SPEED) 
+			while self.tet.low(self):
+				self.display()
 			# when tetrominos cannot move anymore
 			self.tet.add_tetrominos(self)
 			# check if one line or more are complete
