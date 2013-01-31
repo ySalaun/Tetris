@@ -16,24 +16,13 @@ app = QtGui.QApplication(sys.argv)
 app.processEvents()
 
 # initialize graphics
-graphics = tetris_scene.Graphics()
-
-# initialize table threads
-tableP1 = table_screen.Table(graphics, 1)
-tableP2 = table_screen.Table(graphics, 2)
-
-# temporary
-for i in range(1,params.ROW_NB*params.COL_NB):
-	tableP1.value[i] = params.WHITE
-for i in range(1,params.ROW_NB*params.COL_NB):
-	tableP2.value[i] = params.WHITE
+tetris = tetris_scene.Tetris()
 
 # initialize AI
-ai = tetris_ai.AI(tableP1)
+ai = tetris_ai.AI(tetris.tableP1)
 
-# thread start
-tableP1.start() 
-tableP2.start()
+# start tetris
+tetris.start()
 
 #ai.start()
 

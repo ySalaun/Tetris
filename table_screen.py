@@ -1,23 +1,23 @@
 from PyQt4.QtCore import *
+from PyQt4.QtGui import * 
+from PyQt4 import QtCore, QtGui
 
 import params
 import tetris_scene
 import tetrominos
 
 # Table class that checks when game over and contains the color of each case
-class Table(QThread):
+class Table(QWidget):
 	# initialize table with white cases everywhere
-	def __init__(self, g, p):
-		# thread init
-		QThread.__init__(self)
-		self.running = False
+	def __init__(self, p):
+		# QWidget initialization (for emitting signal)
+		QtGui.QWidget.__init__(self)
 
 		# table value init
 		table = []
 		for index in range(params.ROW_NB*params.COL_NB):
 			table.append(params.WHITE)
 		self.value = table
-		self.graphics = g
 		self.player = p
 		self.speed_level = 1
 		
@@ -55,20 +55,11 @@ class Table(QThread):
 	
 	# display a tetrominos after its move
 	def display(self):
-		while not self.graphics.running:
-			self.msleep(self.speed())
-		self.graphics.updateScreen(self.value, self.tet, self.player)
-		self.msleep(self.speed())
-	
+		self.emit(QtCore.SIGNAL("display"), self.player)
+
 	# threading methods
-	def run(self):
-		while not self.graphics.running:
-			self.msleep(10)
-		while True:
-			self.display()
-			# lowering tetrominos loop
-			while self.tet.low(self):
-				self.display()
+	def start(self):
+		if not self.tet.low(self):
 			# when tetrominos cannot move anymore
 			self.tet.add_tetrominos(self)
 			# check if one line or more are complete

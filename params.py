@@ -7,8 +7,8 @@ ROW_NB		= 25
 # number of cases in a column
 COL_NB		= 13 
 
-# speed
-SPEED		= 1
+# speed reference for tetrominoes fall
+SPEED		= 50
 
 # cases colors
 RED 		= QColor(255, 0, 0) 
@@ -20,7 +20,7 @@ YELLOW		= QColor(255, 255, 0)
 WHITE		= QColor(255, 255, 255)
 BLACK		= QColor(0, 0, 0)
 
-# tetrominos
+# tetrominoes
 SHAPE_NB	= 7
 
 # SQUARE

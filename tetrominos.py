@@ -27,16 +27,7 @@ class Tetrominos:
 			if not test:
 				break
 			test = test and table.value[i+j*params.ROW_NB] == params.WHITE
-
 		return test
-
-	# turn the tetrominos
-	def rotate(self,dir,table):
-		aux = self.angle
-		self.angle = (self.angle+dir)%params.dico_nbrot[self.type]
-		if self.check_is_possible(table):
-			return
-		self.angle = aux
 
 	# print and erase the tetrominos
 	def add_tetrominos(self,table):
@@ -60,3 +51,11 @@ class Tetrominos:
 			return True
 		self.position_y -= 1
 		return False
+		
+	# turn the tetrominos
+	def rotate(self, dir ,table):
+		aux = self.angle
+		self.angle = (self.angle+dir)%params.dico_nbrot[self.type]
+		if self.check_is_possible(table):
+			return
+		self.angle = aux
