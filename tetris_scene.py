@@ -1,22 +1,21 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from PyQt4 import QtCore, QtGui, uic
+from PyQt4 import QtCore, QtGui
 
 import params
 import table_screen
+import tetris_ai
 import tetris_playscreen
-import time
-import threading
 
 # Main Tetris class
 class Tetris(QtGui.QWidget):
 	# initialization
-	def __init__(self, parent = None):
+	def __init__(self):
 		# inherit from QWidget for reception of signals
-		QtGui.QWidget.__init__(self, parent)
+		QtGui.QWidget.__init__(self)
 		
 		# keyboard init (contains the scene)
-		self.keyboard = Keyboard()
+		self.keyboard	= Keyboard()
 		
 		# tables init
 		self.tableP1	= table_screen.Table(1)
@@ -31,17 +30,23 @@ class Tetris(QtGui.QWidget):
 		self.keyboard.ui.scoreP2.setDigitCount(9)
 		
 		# boolean that indicates if game is running
-		self.running = False
+		self.running	= False
 		
 		# link with a timer
-		self.timerP1 = QtCore.QBasicTimer()
-		self.timerP2 = QtCore.QBasicTimer()
+		self.timerP1	= QtCore.QBasicTimer()
+		self.timerP2	= QtCore.QBasicTimer()
+		
+		# link with an AI for player 2
+		self.ai2		= tetris_ai.AI(self.tableP2, 2)
 		
 		# display the screen
 		self.keyboard.show()
 		
 		# add connections to signal (buttons, keyboard, ...)
 		self.connect_signals()
+		
+		# start the ai
+		self.ai2.start()
 	
 	# starting method
 	# only used once at the early beginning
@@ -144,6 +149,12 @@ class Tetris(QtGui.QWidget):
 		# connect with signals from table for score
 		QObject.connect(self.tableP1,SIGNAL("score"),self.score)
 		QObject.connect(self.tableP2,SIGNAL("score"),self.score)
+		
+		# connect to ai
+		QObject.connect(self.ai2,SIGNAL("left"),self.move)
+		QObject.connect(self.ai2,SIGNAL("right"),self.move)
+		QObject.connect(self.ai2,SIGNAL("down"),self.down)
+		QObject.connect(self.ai2,SIGNAL("rotate"),self.rotate)
 		
 # Scene class that transform a table into a displayable scene
 class Scene(QGraphicsScene):

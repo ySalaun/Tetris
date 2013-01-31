@@ -1,9 +1,8 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import * 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtGui
 
 import params
-import tetris_scene
 import tetrominos
 
 # Table class that checks when game over and contains the color of each case

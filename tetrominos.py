@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import params
-import table_screen
-import time
 import random
 
 class Tetrominos:
