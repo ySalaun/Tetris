@@ -21,7 +21,7 @@ class Table(QWidget):
 		self.player = p
 		self.speed_level = 1
 		
-		# tetrominos init
+		# tetrominos initialization
 		self.tet = tetrominos.Tetrominos()
 		
 	# check in the table if there are complete lines and delete them
@@ -29,6 +29,7 @@ class Table(QWidget):
 	def checkLineComplete(self):
 		line_complete = 0
 		i = params.ROW_NB-1
+		n = 0
 		while i>=0:
 			sum = 0
 			for j in range(params.COL_NB):
@@ -37,6 +38,7 @@ class Table(QWidget):
 			if sum == params.COL_NB:
 				self.deleteLine(i)
 				line_complete += 1
+				n += 1
 			else:
 				i = i-1
 		return line_complete
@@ -53,17 +55,21 @@ class Table(QWidget):
 	def speed(self):
 		return params.SPEED*5/self.speed_level
 	
-	# display a tetrominos after its move
-	def display(self):
-		self.emit(QtCore.SIGNAL("display"), self.player)
+	# emit a signal when 1 or more (max. 4) lines are filled
+	def score(self, n):
+		self.emit(QtCore.SIGNAL("score"), self.player, n)
 
 	# threading methods
 	def start(self):
+		# try to lower the tetrominos
 		if not self.tet.low(self):
-			# when tetrominos cannot move anymore
+			# when the tetrominos cannot move anymore
 			self.tet.add_tetrominos(self)
+			
 			# check if one line or more are complete
 			line_complete = self.checkLineComplete()
 			if line_complete:
-				self.graphics.updateScreen(self.value, self.tet, self.player)
+				self.score(line_complete)
+			
+			# create new tetrominos
 			self.tet = tetrominos.Tetrominos()

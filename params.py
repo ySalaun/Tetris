@@ -10,6 +10,13 @@ COL_NB		= 13
 # speed reference for tetrominoes fall
 SPEED		= 50
 
+# score
+ONE_LINE	= 50
+TWO_LINES	= 150
+THREE_LINES	= 500
+FOUR_LINES	= 1000
+dico_score	= {1:ONE_LINE, 2:TWO_LINES, 3:THREE_LINES, 4:FOUR_LINES}
+
 # cases colors
 RED 		= QColor(255, 0, 0) 
 TURQUOISE	= QColor(0,	255, 255)

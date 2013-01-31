@@ -19,10 +19,16 @@ class Tetris(QtGui.QWidget):
 		self.keyboard = Keyboard()
 		
 		# tables init
-		self.tableP1 = table_screen.Table(1)
-		self.tableP2 = table_screen.Table(2)
-		self.screenP1 = self.keyboard.ui.screenP1
-		self.screenP2 = self.keyboard.ui.screenP2
+		self.tableP1	= table_screen.Table(1)
+		self.tableP2	= table_screen.Table(2)
+		self.screenP1	= self.keyboard.ui.screenP1
+		self.screenP2	= self.keyboard.ui.screenP2
+		
+		# score initialization
+		self.scoreP1	= 0
+		self.scoreP2	= 0
+		self.keyboard.ui.scoreP1.setDigitCount(9)
+		self.keyboard.ui.scoreP2.setDigitCount(9)
 		
 		# boolean that indicates if game is running
 		self.running = False
@@ -111,9 +117,14 @@ class Tetris(QtGui.QWidget):
 				self.tableP1.tet.rotate(1, self.tableP2)
 			self.updateScreen(p)
 		
-	# when display signal is received for player [p]
-	def display(self, p):
-		print 'display player ', p
+	# when score signal is received for player [p]
+	def score(self, p, n):
+		if p == 1:
+			self.scoreP1 += params.dico_score[min(n,4)]
+			self.keyboard.ui.scoreP1.display(self.scoreP1)
+		if p == 2:
+			self.scoreP2 += params.dico_score[min(n,4)]
+			self.keyboard.ui.scoreP2.display(self.scoreP2)
 
 	# connect the signals to graphics
 	def connect_signals(self):
@@ -130,9 +141,10 @@ class Tetris(QtGui.QWidget):
 		QObject.connect(self.keyboard,SIGNAL("rotate"),self.rotate)
 		QObject.connect(self.keyboard,SIGNAL("pause"),self.game_pause)
 		
-		# connect with signals from table
-		QObject.connect(self.tableP1,SIGNAL("display"),self.display)
-
+		# connect with signals from table for score
+		QObject.connect(self.tableP1,SIGNAL("score"),self.score)
+		QObject.connect(self.tableP2,SIGNAL("score"),self.score)
+		
 # Scene class that transform a table into a displayable scene
 class Scene(QGraphicsScene):
 	# initialization
