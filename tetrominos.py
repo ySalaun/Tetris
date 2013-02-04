@@ -14,6 +14,12 @@ class Tetrominos:
 		self.position_y	= 0
 		self.color		= params.dico_color[self.type]
 
+	def set(self, t, a, x, y):
+		self.type		= t
+		self.angle		= a
+		self.position_x	= x
+		self.position_y	= y
+		
 	# check if the position is possible
 	def check_is_possible(self,table):
 		test = True
@@ -23,7 +29,7 @@ class Tetrominos:
 			test = test and i >= 0 and i < params.ROW_NB
 			test = test and j >= 0 and j < params.COL_NB
 			if not test:
-				break
+				return False
 			test = test and table.value[i+j*params.ROW_NB] == params.WHITE
 		return test
 
@@ -51,9 +57,26 @@ class Tetrominos:
 		return False
 		
 	# turn the tetrominos
+	# TODO allow tetros to turn near borders
 	def rotate(self, dir ,table):
 		aux = self.angle
 		self.angle = (self.angle+dir)%params.dico_nbrot[self.type]
 		if self.check_is_possible(table):
 			return
 		self.angle = aux
+	
+	# compute neighbours of the tetrominos
+	def neighbours(self):
+		neighbours = set()
+		for (x,y) in params.dico_shape[self.type][self.angle]:
+			i = self.position_y+y
+			j = self.position_x+x
+			for t in [-1, 1]:
+				neighbours.add((i+t,j))
+				neighbours.add((i,j+t))
+		for (x,y) in params.dico_shape[self.type][self.angle]:
+			i = self.position_y+y
+			j = self.position_x+x
+			neighbours.add((i,j))
+			neighbours.remove((i,j))
+		return neighbours

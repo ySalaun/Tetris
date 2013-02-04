@@ -56,19 +56,33 @@ class Tetris(QtGui.QWidget):
 	
 	# method called by timerP1 at each iteration
 	def startP1(self):
-		if self.running:
-			self.tableP1.start()
-			self.updateScreen()
-		time = self.tableP1.speed()
-		self.timerP1.start(time, self)
-	
+		if not self.tableP1.game_over:
+			if self.running:
+				self.tableP1.start()
+				if self.tableP1.game_over:
+					self.game_over(1)
+				else:
+					self.updateScreen()
+					time = self.tableP1.speed()
+					self.timerP1.start(time, self)
+			else:
+				time = self.tableP1.speed()
+				self.timerP1.start(time, self)
+				
 	# method called by timerP2 at each iteration
 	def startP2(self):
-		if self.running:
-			self.tableP2.start()
-			self.updateScreen()
-		time = self.tableP2.speed()
-		self.timerP2.start(time, self)
+		if not self.tableP2.game_over:
+			if self.running:
+				self.tableP2.start()
+				if self.tableP2.game_over:
+					self.game_over(2)
+				else:
+					self.updateScreen()
+					time = self.tableP2.speed()
+					self.timerP2.start(time, self)
+			else:
+				time = self.tableP2.speed()
+				self.timerP2.start(time, self)
 	
 	# timer event, call the corresponding starting function
 	def timerEvent(self, event):
@@ -94,14 +108,17 @@ class Tetris(QtGui.QWidget):
 	# when pause button is pressed
 	def game_pause(self):
 		self.running = False
+		
+	def game_over(self, p):
+		print 'game lost for player',p
 	
 	# when left/right button for player [p] is pressed
 	def move(self, p, direction):
 		if self.running:
 			if p == 1:
 				self.tableP1.tet.move(self.tableP1, direction)
-			if p == 2:
-				self.tableP1.tet.move(self.tableP2, direction)
+			elif p == 2:
+				self.tableP2.tet.move(self.tableP2, direction)
 			self.updateScreen(p)
 		
 	# when down button for player [p] is pressed
@@ -109,8 +126,8 @@ class Tetris(QtGui.QWidget):
 		if self.running:
 			if p == 1:
 				self.tableP1.tet.low(self.tableP1)
-			if p == 2:
-				self.tableP1.tet.low(self.tableP2)
+			elif p == 2:
+				self.tableP2.tet.low(self.tableP2)
 			self.updateScreen(p)
 		
 	# when rotate button for player [p] is pressed
@@ -118,8 +135,8 @@ class Tetris(QtGui.QWidget):
 		if self.running:
 			if p == 1:
 				self.tableP1.tet.rotate(1, self.tableP1)
-			if p == 2:
-				self.tableP1.tet.rotate(1, self.tableP2)
+			elif p == 2:
+				self.tableP2.tet.rotate(1, self.tableP2)
 			self.updateScreen(p)
 		
 	# when score signal is received for player [p]
@@ -179,10 +196,11 @@ class Scene(QGraphicsScene):
 			j = (t-i)/params.ROW_NB
 			self.addCase(i, j, table.value[i+j*params.ROW_NB])
 			t += 1
-		for (x,y) in params.dico_shape[table.tet.type][table.tet.angle]:
-			i = table.tet.position_y+y
-			j = table.tet.position_x+x
-			self.addCase(i, j, table.tet.color)
+		if not table.game_over:
+			for (x,y) in params.dico_shape[table.tet.type][table.tet.angle]:
+				i = table.tet.position_y+y
+				j = table.tet.position_x+x
+				self.addCase(i, j, table.tet.color)
 		screen.setScene(self)
 
 	# add a case with coordinate (i,j) in the table

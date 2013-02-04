@@ -1,6 +1,6 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import * 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 
 import params
 import tetrominos
@@ -16,12 +16,13 @@ class Table(QWidget):
 		table = []
 		for index in range(params.ROW_NB*params.COL_NB):
 			table.append(params.WHITE)
-		self.value = table
-		self.player = p
-		self.speed_level = 1
+		self.value			= table
+		self.player			= p
+		self.speed_level	= 1
+		self.game_over		= False
 		
 		# tetrominos initialization
-		self.tet = tetrominos.Tetrominos()
+		self.tet			= tetrominos.Tetrominos()
 		
 	# check in the table if there are complete lines and delete them
 	# return the number of complete lines
@@ -72,3 +73,5 @@ class Table(QWidget):
 			
 			# create new tetrominos
 			self.tet = tetrominos.Tetrominos()
+			if not self.tet.check_is_possible(self):
+				self.game_over = True
