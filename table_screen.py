@@ -3,6 +3,7 @@ from PyQt4.QtGui import *
 from PyQt4 import QtGui, QtCore
 
 import params
+import random
 import tetrominos
 
 # Table class that checks when game over and contains the color of each case
@@ -51,6 +52,20 @@ class Table(QWidget):
 		for j in range(params.COL_NB):
 			self.value[j*params.ROW_NB] = params.WHITE
 	
+	# add [n] lines in the table and translates the current tetrominos of [n]
+	def addLine(self, n):
+		for i in range(n,params.ROW_NB):
+			for j in range(params.COL_NB):
+				self.value[i-n+j*params.ROW_NB] = self.value[i-1+j*params.ROW_NB]
+		for i in range(0, n):
+			for j in range(params.COL_NB):
+				if (random.randrange(4) != 1 or j == i) and j != params.COL_NB - i:
+					self.value[i-n+j*params.ROW_NB] = params.dico_color[random.randrange(params.SHAPE_NB)]
+				else:
+					self.value[i-n+j*params.ROW_NB] = params.WHITE
+		if not self.tet.check_is_possible(self):
+			self.game_over = True
+		
 	# compute the speed depending on the speed level
 	def speed(self):
 		return params.SPEED*5/self.speed_level
@@ -73,5 +88,6 @@ class Table(QWidget):
 			
 			# create new tetrominos
 			self.tet = tetrominos.Tetrominos()
+			self.emit(QtCore.SIGNAL("new tetrominos"), self.player)
 			if not self.tet.check_is_possible(self):
 				self.game_over = True

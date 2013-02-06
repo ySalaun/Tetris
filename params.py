@@ -8,7 +8,14 @@ ROW_NB		= 25
 COL_NB		= 13 
 
 # speed reference for tetrominoes fall
-SPEED		= 20
+SPEED		= 50
+
+# AI level 
+AI_LEVEL	= 5
+
+# AI id
+BASIC		= 0
+YOHANN		= 1
 
 # score
 ONE_LINE	= 50
@@ -16,6 +23,7 @@ TWO_LINES	= 150
 THREE_LINES	= 500
 FOUR_LINES	= 1000
 dico_score	= {1:ONE_LINE, 2:TWO_LINES, 3:THREE_LINES, 4:FOUR_LINES}
+dico_add	= {1:0, 2:1, 3:2, 4:3}
 
 # cases colors
 RED 		= QColor(255, 0, 0) 
@@ -45,7 +53,7 @@ line		= [line_0,line_1]
 p_1			= [(0,0),(0,1),(0,2),(1,2)]
 p_2			= [(-1,0),(-1,1),(0,0),(1,0)]
 p_3			= [(-1,0),(0,0),(0,1),(0,2)]
-p_4			= [(-1,1),(0,1),(1,1),(0,1)]
+p_4			= [(-1,1),(0,1),(1,1),(1,0)]
 
 p			= [p_1,p_2,p_3,p_4]
 
@@ -58,7 +66,7 @@ q_4			= [(-1,0),(0,0),(1,0),(1,1)]
 q			= [q_1,q_2,q_3,q_4]
 
 # Z-SHAPE
-z_1			= [(0,0),(1,2),(1,0),(1,1)]
+z_1			= [(0,0),(1,2),(0,1),(1,1)]
 z_2			= [(-1,1),(0,1),(0,0),(1,0)]
 
 z			= [z_1,z_2]

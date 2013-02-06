@@ -14,12 +14,19 @@ class Tetrominos:
 		self.position_y	= 0
 		self.color		= params.dico_color[self.type]
 
+	# set a tetrominos with the given parameters
 	def set(self, t, a, x, y):
 		self.type		= t
 		self.angle		= a
 		self.position_x	= x
 		self.position_y	= y
-		
+	
+	# copy a tetrominos
+	def copy(self):
+		tet = Tetrominos()
+		tet.set(self.type, self.angle, self.position_x, self.position_y)
+		return tet
+	
 	# check if the position is possible
 	def check_is_possible(self,table):
 		test = True
@@ -49,20 +56,27 @@ class Tetrominos:
 		return False
 
 	# lower the tetrominos and return True if it is possible
-	def low(self,table):
-		self.position_y += 1
+	# the option direction allows the tetrominos to go higher (used for ai only)
+	def low(self, table, direction = 1):
+		self.position_y += direction*1
 		if self.check_is_possible(table):
 			return True
-		self.position_y -= 1
+		self.position_y -= direction*1
 		return False
 		
 	# turn the tetrominos
-	# TODO allow tetros to turn near borders
 	def rotate(self, dir ,table):
 		aux = self.angle
 		self.angle = (self.angle+dir)%params.dico_nbrot[self.type]
 		if self.check_is_possible(table):
 			return
+		self.position_x -= 1
+		if self.check_is_possible(table):
+			return
+		self.position_x += 2
+		if self.check_is_possible(table):
+			return
+		self.position_x -= 1
 		self.angle = aux
 	
 	# compute neighbours of the tetrominos

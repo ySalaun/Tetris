@@ -37,7 +37,7 @@ class Tetris(QtGui.QWidget):
 		self.timerP2	= QtCore.QBasicTimer()
 		
 		# link with an AI for player 2
-		self.ai2		= tetris_ai.AI(self.tableP2, 2)
+		self.ai2		= tetris_ai.AI_yohann(self.tableP2, 2)
 		
 		# display the screen
 		self.keyboard.show()
@@ -108,8 +108,13 @@ class Tetris(QtGui.QWidget):
 	# when pause button is pressed
 	def game_pause(self):
 		self.running = False
-		
+	
+	# when player [p] lose the game
 	def game_over(self, p):
+		if p == 1:
+			tet = self.tableP1.tet
+		else:
+			tet = self.tableP2.tet
 		print 'game lost for player',p
 	
 	# when left/right button for player [p] is pressed
@@ -122,12 +127,12 @@ class Tetris(QtGui.QWidget):
 			self.updateScreen(p)
 		
 	# when down button for player [p] is pressed
-	def down(self, p):
+	def down(self, p, direction = 1):
 		if self.running:
 			if p == 1:
-				self.tableP1.tet.low(self.tableP1)
+				self.tableP1.tet.low(self.tableP1, direction)
 			elif p == 2:
-				self.tableP2.tet.low(self.tableP2)
+				self.tableP2.tet.low(self.tableP2, direction)
 			self.updateScreen(p)
 		
 	# when rotate button for player [p] is pressed
@@ -141,12 +146,23 @@ class Tetris(QtGui.QWidget):
 		
 	# when score signal is received for player [p]
 	def score(self, p, n):
+		bonus = min(n,4)
+		malus = params.dico_add[min(n,4)] + 2
+		for i in range(malus):
+			self.down(3-p, -1)
 		if p == 1:
-			self.scoreP1 += params.dico_score[min(n,4)]
+			self.scoreP1 += params.dico_score[bonus]
 			self.keyboard.ui.scoreP1.display(self.scoreP1)
+			self.tableP2.addLine(malus)
 		if p == 2:
-			self.scoreP2 += params.dico_score[min(n,4)]
+			self.scoreP2 += params.dico_score[bonus]
 			self.keyboard.ui.scoreP2.display(self.scoreP2)
+			self.tableP1.addLine(malus)
+	
+	# when a new tetrominos is created for player [p]
+	def new_tetrominos(self, p):
+		if p == 2 and self.ai2.id == params.YOHANN:
+			self.ai2.opt_found = False
 
 	# connect the signals to graphics
 	def connect_signals(self):
@@ -168,6 +184,7 @@ class Tetris(QtGui.QWidget):
 		QObject.connect(self.tableP2,SIGNAL("score"),self.score)
 		
 		# connect to ai
+		QObject.connect(self.tableP2,SIGNAL("new tetrominos"),self.new_tetrominos)
 		QObject.connect(self.ai2,SIGNAL("left"),self.move)
 		QObject.connect(self.ai2,SIGNAL("right"),self.move)
 		QObject.connect(self.ai2,SIGNAL("down"),self.down)
