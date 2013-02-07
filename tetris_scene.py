@@ -37,6 +37,9 @@ class Tetris(QtGui.QWidget):
 		self.timerP2	= QtCore.QBasicTimer()
 		
 		# link with an AI for player 2
+		self.ai1		= tetris_ai.AI_yohann(self.tableP1, 1)
+		
+		# link with an AI for player 2
 		self.ai2		= tetris_ai.AI_yohann(self.tableP2, 2)
 		
 		# display the screen
@@ -45,14 +48,13 @@ class Tetris(QtGui.QWidget):
 		# add connections to signal (buttons, keyboard, ...)
 		self.connect_signals()
 		
-		# start the ai
-		self.ai2.start()
-	
 	# starting method
 	# only used once at the early beginning
 	def start(self):
 		self.startP1()
 		self.startP2()
+		self.ai1.start()
+		self.ai2.start()
 	
 	# method called by timerP1 at each iteration
 	def startP1(self):
@@ -104,10 +106,14 @@ class Tetris(QtGui.QWidget):
 	# when start button is pressed
 	def game_start(self):
 		self.running = True
+		self.ai1.running = True
+		self.ai2.running = True
 
 	# when pause button is pressed
 	def game_pause(self):
 		self.running = False
+		self.ai1.running = False
+		self.ai2.running = False
 	
 	# when player [p] lose the game
 	def game_over(self, p):
@@ -161,6 +167,8 @@ class Tetris(QtGui.QWidget):
 	
 	# when a new tetrominos is created for player [p]
 	def new_tetrominos(self, p):
+		if p == 1 and self.ai1.id == params.YOHANN:
+			self.ai1.opt_found = False
 		if p == 2 and self.ai2.id == params.YOHANN:
 			self.ai2.opt_found = False
 
@@ -183,7 +191,14 @@ class Tetris(QtGui.QWidget):
 		QObject.connect(self.tableP1,SIGNAL("score"),self.score)
 		QObject.connect(self.tableP2,SIGNAL("score"),self.score)
 		
-		# connect to ai
+		# connect to ai 1
+		QObject.connect(self.tableP1,SIGNAL("new tetrominos"),self.new_tetrominos)
+		QObject.connect(self.ai1,SIGNAL("left"),self.move)
+		QObject.connect(self.ai1,SIGNAL("right"),self.move)
+		QObject.connect(self.ai1,SIGNAL("down"),self.down)
+		QObject.connect(self.ai1,SIGNAL("rotate"),self.rotate)
+		
+		# connect to ai 2
 		QObject.connect(self.tableP2,SIGNAL("new tetrominos"),self.new_tetrominos)
 		QObject.connect(self.ai2,SIGNAL("left"),self.move)
 		QObject.connect(self.ai2,SIGNAL("right"),self.move)

@@ -8,7 +8,7 @@ ROW_NB		= 25
 COL_NB		= 13 
 
 # speed reference for tetrominoes fall
-SPEED		= 50
+SPEED		= 5
 
 # AI level 
 AI_LEVEL	= 5

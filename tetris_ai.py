@@ -6,6 +6,7 @@ import params
 import random
 import table_screen
 import tetrominos
+import time
 
 UP		= 1
 DOWN	= 2
@@ -28,6 +29,9 @@ class AI(QtGui.QWidget):
 		
 		# identification for ai
 		self.id = params.BASIC
+		
+		# for pause
+		self.running = False
 	
 	# timer event, call the corresponding starting function
 	def timerEvent(self, event):
@@ -65,34 +69,42 @@ class AI_yohann(AI):
 		
 		# boolean that indicates if the optimal position is found
 		self.opt_found	= False
-		
+		self.opt_path	= []
 		# specify ai id
 		self.id = params.YOHANN
 		
 	# starting method called regularly for ai 
 	def start(self):
 		# find the best position when not already
-		if not self.opt_found:
-			self.best_position()
-			self.opt_found = True
-		# move to this position
-		self.go_to_opt()
+		if self.running:
+			if not self.opt_found:
+				not_reachable = []
+				while True:
+					self.best_position(not_reachable)
+					self.opt_found = True
+					self.opt_path = self.find_path()
+					if len(self.opt_path) > 0:
+						break
+					not_reachable.append((self.Y_opt, self.X_opt))
+			# move to this position
+			self.go_to_opt()
 		# call the timer to begin another cycle
 		self.timer.start(params.AI_LEVEL, self)
 	
 	# method that finds the best path and execute it when necessary
 	def go_to_opt(self):
-		path = self.find_path()
+		path = self.opt_path
 		if len(path) > 0:
-			command = path.pop()
-		else:
-			command = DOWN
-		while command != DOWN:
-			self.move(command)
-			if len(path) > 0:
-				command = path.pop()
-			else:
-				command = DOWN
+			command = path[len(path)-1]
+			while command[1] <= self.table.tet.position_y:
+				path.pop()
+				if command[1] <= self.table.tet.position_y and command[0] != DOWN:
+					self.move(command[0])
+					break
+				if len(path) > 0:
+					command = path[len(path)-1]
+				else:
+					break
 	
 	# compute the fusion table of the table value and the tetrominos
 	def fusion(self, tet):
@@ -102,7 +114,7 @@ class AI_yohann(AI):
 		for (x,y) in params.dico_shape[tet.type][tet.angle]:
 			i = tet.position_y+y
 			j = tet.position_x+x
-			table[i+j*params.ROW_NB] = self.table.value[i+j*params.ROW_NB]
+			table[i+j*params.ROW_NB] = params.RED
 		return table
 	
 	# computes the filling possibilities for a given tetrominos position
@@ -118,48 +130,51 @@ class AI_yohann(AI):
 	
 	# computes the cost function of a given tetrominos in a given position
 	def cost(self, tet):
-		table = self.fusion(tet)
-		neighbours = tet.neighbours()
+		table		= self.fusion(tet)
+		neighbours	= tet.neighbours()
 		
+		ghost_neighbours = 0
 		cost = 0
 		for (i,j) in neighbours:
 			# if the neighbour is a border part it is very good (lower the cost)
 			if not(i >= 0 and i < params.ROW_NB and j >= 0 and j < params.COL_NB):
-				cost -= 1
+				ghost_neighbours += 1
+				cost -= 8
 			# if the neighbour is a white case it can be bad
 			elif table[i+j*params.ROW_NB] == params.WHITE:
+				ghost_neighbours += 1
 				escapes = self.blank(table, i, j)
 				# if the white case is alone (no filling possibilities) it is very bad (increase the cost)
 				if escapes == 0:
-					cost += 20
+					cost += 500
 				# if there is only one other white case near it, it is risky (increase a bit the cost)
 				elif escapes == 1:
-					cost += 3
+					cost += 20
 				# else the case can be filled next time (no cost change)
 			# if the neighbour is a tetrominos part it is very good (lower the cost)
 			else:
-				cost -= 1
+				cost -= 10
+		if ghost_neighbours == len(neighbours):
+			return 1000
 		return cost
 	
 	# finds the "best" position for a given tetrominos and stores it
-	def best_position(self):
-		candidate = tetrominos.Tetrominos()
-		type = self.table.tet.type
-		
-		candidates	= []
+	def best_position(self, not_reachable):
+		candidate	= tetrominos.Tetrominos()
+		type		= self.table.tet.type
 		cost_min	= 1000
 		for x in range(params.COL_NB):
 			for y in range(1, params.ROW_NB):
 				for angle in range(params.dico_nbrot[type]):
 					candidate.set(type, angle, x, y)
-					if candidate.check_is_possible(self.table):
-						cost = self.cost(candidate)
-						candidates.append((x, y, angle, cost))
-						if cost < cost_min or (cost <= cost_min + 1 and y > self.Y_opt):
-							self.X_opt		= x
-							self.Y_opt		= y
-							self.angle_opt	= angle
-							cost_min		= cost
+					if not_reachable.count((y,x)) > 0 or not candidate.check_is_possible(self.table):
+						continue
+					cost = self.cost(candidate)
+					if (cost < cost_min or cost <= cost_min + 5*(y - self.Y_opt)):
+						self.X_opt		= x
+						self.Y_opt		= y
+						self.angle_opt	= angle
+						cost_min		= cost
 	
 	# find a path to put the tetrominos in the 'best' position
 	def find_path(self):
@@ -183,23 +198,23 @@ class AI_yohann(AI):
 	def recursive_path(self, tet_path, tet_curr, path, direction = UP):
 		# try to go upward
 		while tet_path.low(self.table, -1) and tet_path.position_y != tet_curr.position_y:
-			path.append(DOWN)
+			path.append((DOWN, tet_path.position_y, tet_path.position_x))
 		# if the good line (y) is reached, go right or left and rotate if necessary
 		if tet_path.position_y == tet_curr.position_y:
 			if tet_path.position_x < tet_curr.position_x:
 				for i in range(abs(tet_path.position_x-tet_curr.position_x)):
-					path.append(LEFT)
+					path.append((LEFT, tet_path.position_y, tet_path.position_x))
 			else:
 				for i in range(abs(tet_path.position_x-tet_curr.position_x)):
-					path.append(RIGHT)
+					path.append((RIGHT, tet_path.position_y, tet_path.position_x))
 			while tet_path.angle != tet_curr.angle:
-				tet_path.angle = (tet_path.angle +1)%params.dico_nbrot[tet_path.type]
-				path.append(UP)
+				tet_path.angle = (tet_path.angle -1)%params.dico_nbrot[tet_path.type]
+				path.append((UP, tet_path.position_y, tet_path.position_x))
 			return True
 		# else the tetrominos has to go right or left in order to find an 'escape'
 		else:
 			test = False
-			path_left	= [LEFT]
+			path_left	= [(RIGHT, tet_path.position_y, tet_path.position_x)]
 			if direction != RIGHT:
 				tet_left = tet_path.copy()
 				if tet_left.move(self.table, -1):
@@ -208,7 +223,7 @@ class AI_yohann(AI):
 				for i in range(len(path_left)):
 					path.append(path_left[i])
 				return True
-			path_right	= [RIGHT]
+			path_right	= [(LEFT, tet_path.position_y, tet_path.position_x)]
 			if direction != LEFT:
 				tet_right = tet_path.copy()
 				if tet_right.move(self.table, 1):
