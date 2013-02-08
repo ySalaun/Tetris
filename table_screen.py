@@ -30,7 +30,6 @@ class Table(QWidget):
 	def checkLineComplete(self):
 		line_complete = 0
 		i = params.ROW_NB-1
-		n = 0
 		while i>=0:
 			sum = 0
 			for j in range(params.COL_NB):
@@ -39,7 +38,6 @@ class Table(QWidget):
 			if sum == params.COL_NB:
 				self.deleteLine(i)
 				line_complete += 1
-				n += 1
 			else:
 				i = i-1
 		return line_complete
@@ -54,16 +52,21 @@ class Table(QWidget):
 	
 	# add [n] lines in the table and translates the current tetrominos of [n]
 	def addLine(self, n):
-		for i in range(n,params.ROW_NB):
-			for j in range(params.COL_NB):
-				self.value[i-n+j*params.ROW_NB] = self.value[i-1+j*params.ROW_NB]
+		game_over = False
 		for i in range(0, n):
 			for j in range(params.COL_NB):
+				if self.value[i+j*params.ROW_NB] != params.WHITE:
+					game_over = True
+		for i in range(0,params.ROW_NB-n):
+			for j in range(params.COL_NB):
+				self.value[i+j*params.ROW_NB] = self.value[i+n+j*params.ROW_NB]
+		for i in range(params.ROW_NB-n, params.ROW_NB):
+			for j in range(params.COL_NB):
 				if (random.randrange(4) != 1 or j == i) and j != params.COL_NB - i:
-					self.value[i-n+j*params.ROW_NB] = params.dico_color[random.randrange(params.SHAPE_NB)]
+					self.value[i+j*params.ROW_NB] = params.dico_color[random.randrange(params.SHAPE_NB)]
 				else:
-					self.value[i-n+j*params.ROW_NB] = params.WHITE
-		if not self.tet.check_is_possible(self):
+					self.value[i+j*params.ROW_NB] = params.WHITE
+		if game_over or not self.tet.check_is_possible(self):
 			self.game_over = True
 		
 	# compute the speed depending on the speed level

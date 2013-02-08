@@ -127,6 +127,17 @@ class AI_yohann(AI):
 		if i >= 1 and table[i-1+j*params.ROW_NB] == params.WHITE:
 			n += 1
 		return n
+		
+	def checkLineComplete(self, table):
+		line_complete = 0
+		for i in range(params.ROW_NB):
+			sum = 0
+			for j in range(params.COL_NB):
+				if table[i+j*params.ROW_NB] != params.WHITE:
+					sum += 1
+			if sum == params.COL_NB:
+				line_complete += 1
+		return line_complete
 	
 	# computes the cost function of a given tetrominos in a given position
 	def cost(self, tet):
@@ -156,6 +167,9 @@ class AI_yohann(AI):
 				cost -= 10
 		if ghost_neighbours == len(neighbours):
 			return 1000
+		line_filled = min(self.checkLineComplete(table), 4)
+		if line_filled > 0:
+			cost -= max(params.dico_score[line_filled]/50,10)
 		return cost
 	
 	# finds the "best" position for a given tetrominos and stores it
