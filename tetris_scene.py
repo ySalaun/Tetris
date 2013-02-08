@@ -53,7 +53,7 @@ class Tetris(QtGui.QWidget):
 	def start(self):
 		self.startP1()
 		self.startP2()
-		self.ai1.start()
+		#self.ai1.start()
 		self.ai2.start()
 	
 	# method called by timerP1 at each iteration
@@ -153,7 +153,9 @@ class Tetris(QtGui.QWidget):
 	# when score signal is received for player [p]
 	def score(self, p, n):
 		bonus = min(n,4)
-		malus = params.dico_add[min(n,4)] + 2
+		malus = params.dico_add[min(n,4)]
+		if malus == 0:
+			return
 		for i in range(malus):
 			self.down(3-p, -1)
 		if p == 1:
